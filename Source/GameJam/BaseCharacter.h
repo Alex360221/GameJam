@@ -35,4 +35,7 @@ public:
 	void TurnAtRate(float axis) { ABaseCharacter::AddControllerYawInput(axis); }
 	void LookUpRate(float axis) { ABaseCharacter::AddControllerPitchInput(axis); }
 
+	void StartJump() { ABaseCharacter::Jump(); }
+	void EndJump() { ABaseCharacter::StopJumping(); }
+
 };
