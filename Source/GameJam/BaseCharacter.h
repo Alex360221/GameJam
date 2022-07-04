@@ -38,4 +38,8 @@ public:
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
 
+
+//inventory
+	TArray<class ABaseItemClass*> inventory;
+
 };
