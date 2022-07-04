@@ -3,6 +3,7 @@
 
 #include "BaseCharacter.h"
 #include "Components/StaticMeshComponent.h"
+#include "Items/BaseItemClass.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -26,6 +27,7 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	IsPlayingLookingAtItem();
 
 }
 
@@ -46,6 +48,67 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABaseCharacter::EndJump);
 
+	PlayerInputComponent->BindAction("PickUpItem", IE_Pressed, this, &ABaseCharacter::PickUpUtem);
+
 
 }
+
+void ABaseCharacter::PickUpUtem()
+{
+	FHitResult hit = LineTraceCamera();
+	if (hit.bBlockingHit)
+	{
+		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
+		if (item)
+		{
+			GLog->Log("Item Hit");
+			AddItemToInventory(item);
+		}
+		else { GLog->Log("No Item"); }
+	}
+}
+
+void ABaseCharacter::AddItemToInventory(ABaseItemClass* item)
+{
+	//Adds item to inventory
+	inventory.Add(item);
+	item->SetActorEnableCollision(false);
+	item->SetActorHiddenInGame(true);
+	GLog->Log("Item Added");
+}
+
+
+
+FHitResult ABaseCharacter::LineTraceCamera()
+{
+	//GLog->Log("Line Trace add");
+	APlayerCameraManager* playerCameraManger = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+	FVector start = playerCameraManger->GetCameraLocation();
+	FVector forwardVector = playerCameraManger->GetActorForwardVector();
+	FVector end = (forwardVector * 400) + start;
+	FCollisionQueryParams collisionsParms;
+	FHitResult outHit;
+	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, collisionsParms);
+	return outHit;
+}
+
+void ABaseCharacter::IsPlayingLookingAtItem()
+{
+	FHitResult hit = LineTraceCamera();
+	if (hit.bBlockingHit)
+	{
+		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
+		if (item)
+		{
+			GLog->Log("Looking at Item");
+			displayItemPickUp = true;
+			lookedAtItem = item;
+			return;
+		}
+	}
+
+	displayItemPickUp = false;
+	lookedAtItem = nullptr;
+}
+
 

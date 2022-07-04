@@ -42,4 +42,21 @@ public:
 //inventory
 	TArray<class ABaseItemClass*> inventory;
 
+	//will pick up item
+	void PickUpUtem();
+
+private:
+
+	//Adds item to inventory
+	void AddItemToInventory(class ABaseItemClass* item);
+
+	FHitResult LineTraceCamera();
+
+	//will dertimne if the player is looking at an item
+	void IsPlayingLookingAtItem();
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool displayItemPickUp = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		ABaseItemClass* lookedAtItem;
 };
