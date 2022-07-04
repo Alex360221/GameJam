@@ -27,6 +27,7 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	IsPlayingLookingAtItem();
 
 }
 
@@ -54,22 +55,33 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ABaseCharacter::PickUpUtem()
 {
-	bool isHit = false;
-	FHitResult hit = LineTraceCamera(&isHit);
-	if (isHit)
+	FHitResult hit = LineTraceCamera();
+	if (hit.bBlockingHit)
 	{
 		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
 		if (item)
 		{
 			GLog->Log("Item Hit");
+			AddItemToInventory(item);
 		}
 		else { GLog->Log("No Item"); }
 	}
 }
 
-FHitResult ABaseCharacter::LineTraceCamera(bool* isHit)
+void ABaseCharacter::AddItemToInventory(ABaseItemClass* item)
 {
-	GLog->Log("Line Trace add");
+	//Adds item to inventory
+	inventory.Add(item);
+	item->SetActorEnableCollision(false);
+	item->SetActorHiddenInGame(true);
+	GLog->Log("Item Added");
+}
+
+
+
+FHitResult ABaseCharacter::LineTraceCamera()
+{
+	//GLog->Log("Line Trace add");
 	APlayerCameraManager* playerCameraManger = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	FVector start = playerCameraManger->GetCameraLocation();
 	FVector forwardVector = playerCameraManger->GetActorForwardVector();
@@ -77,7 +89,26 @@ FHitResult ABaseCharacter::LineTraceCamera(bool* isHit)
 	FCollisionQueryParams collisionsParms;
 	FHitResult outHit;
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, collisionsParms);
-	isHit = &hit;
 	return outHit;
 }
+
+void ABaseCharacter::IsPlayingLookingAtItem()
+{
+	FHitResult hit = LineTraceCamera();
+	if (hit.bBlockingHit)
+	{
+		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
+		if (item)
+		{
+			GLog->Log("Looking at Item");
+			displayItemPickUp = true;
+			lookedAtItem = item;
+			return;
+		}
+	}
+
+	displayItemPickUp = false;
+	lookedAtItem = nullptr;
+}
+
 
