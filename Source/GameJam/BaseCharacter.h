@@ -42,4 +42,11 @@ public:
 //inventory
 	TArray<class ABaseItemClass*> inventory;
 
+	//will pick up item
+	void PickUpUtem();
+
+private:
+	FHitResult LineTraceCamera(bool* isHit);
+
+
 };
