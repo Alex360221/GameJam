@@ -10,12 +10,14 @@ ABaseAICompanion::ABaseAICompanion()
 	PrimaryActorTick.bCanEverTick = true;
 
 	targetLocation = FVector(0, 0, 0);
+	followPlayer = false;
 }
 
 // Called when the game starts or when spawned
 void ABaseAICompanion::BeginPlay()
 {
 	Super::BeginPlay();
+	targetLocation = GetActorLocation();
 
 }
 
@@ -23,24 +25,29 @@ void ABaseAICompanion::BeginPlay()
 void ABaseAICompanion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(!moveToPlayer)
+	if (followPlayer)
 	{
-		if (ShouldStartMove())
+		if (!moveToPlayer)
 		{
-			moveToPlayer = true;
+			if (ShouldStartMove())
+			{
+				moveToPlayer = true;
+			}
+		}
+		else
+		{
+			if (!ShouldStopMove()) { FollowPlayer(50); }
+			else { moveToPlayer = false; }
 		}
 	}
-	else
-	{
-		if(!ShouldStopMove()) { FollowPlayer(); }	
-		else { moveToPlayer = false; }
-	}
+	else { moveToPlayer = false; }
 }
 
 bool ABaseAICompanion::ShouldStartMove()
 {
-	if (DisToPlayer() > 300)
+	if (DisToPlayer() > 500)
 	{
+		GLog->Log("Start Moving");
 		return true;
 	}
 	return false;
@@ -50,8 +57,10 @@ bool ABaseAICompanion::ShouldStopMove()
 {
 	if (DisToPlayer() < 100)
 	{
+		GLog->Log("Stop Moving");
 		return true;
 	}
 	return false;
 }
+
 
