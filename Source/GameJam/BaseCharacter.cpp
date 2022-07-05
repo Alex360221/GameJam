@@ -127,10 +127,11 @@ void ABaseCharacter::IsPlayingLookingAtItem()
 		}
 		else
 		{
-			GLog->Log("Looking at Object");
+			
 			APlaceableInteract* object = Cast<APlaceableInteract>(hit.GetActor());
 			if (object)
 			{
+				GLog->Log("Looking at Object");
 				displayObjectInteract = true;
 				lookAtObject = object;
 				object->player = this;
