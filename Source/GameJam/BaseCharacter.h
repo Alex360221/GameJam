@@ -28,6 +28,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class UStaticMeshComponent* playerMesh;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		class ABaseAICompanion* companion;
 
 	void MoveForward(float axis) { AddMovementInput(GetActorForwardVector(), axis); }
 	void MoveRight(float axis) { AddMovementInput(GetActorRightVector(), axis); }
@@ -38,12 +40,23 @@ public:
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
 
+	//player stats
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float currentHealth;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float maxHealth;
+private:
+	float currentStatTimer;
+
+public:
 
 //inventory
 	TArray<class ABaseItemClass*> inventory;
 
 	//will pick up item
 	void PickUpUtem();
+	UFUNCTION(BlueprintCallable)
+		bool PlayerHasItem(FString itemName);
 
 private:
 
@@ -59,4 +72,17 @@ public:
 		bool displayItemPickUp = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		ABaseItemClass* lookedAtItem;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool displayObjectInteract = false;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		class APlaceableInteract* lookAtObject;
+
+
+	void InteractWithObject();
+	
+private:
+	//stat fucntions
+	void Regen();
+
 };
