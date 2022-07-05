@@ -4,6 +4,7 @@
 #include "BaseCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Items/BaseItemClass.h"
+#include "Map/PlaceableInteract.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -49,6 +50,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABaseCharacter::EndJump);
 
 	PlayerInputComponent->BindAction("PickUpItem", IE_Pressed, this, &ABaseCharacter::PickUpUtem);
+	PlayerInputComponent->BindAction("InteractWithObject", IE_Pressed, this, &ABaseCharacter::InteractWithObject);
 
 
 }
@@ -77,7 +79,14 @@ void ABaseCharacter::AddItemToInventory(ABaseItemClass* item)
 	GLog->Log("Item Added");
 }
 
-
+bool ABaseCharacter::PlayerHasItem(FString itemName)
+{
+	for (int i = 0; i < inventory.Num(); i++)
+	{
+		if (inventory[i]->itemName == itemName) { return true; }
+	}
+	return false;
+}
 
 FHitResult ABaseCharacter::LineTraceCamera()
 {
@@ -103,12 +112,50 @@ void ABaseCharacter::IsPlayingLookingAtItem()
 			GLog->Log("Looking at Item");
 			displayItemPickUp = true;
 			lookedAtItem = item;
+
+			displayObjectInteract = false;
+			lookAtObject = nullptr;
 			return;
+		}
+		else
+		{
+			GLog->Log("Looking at Object");
+			APlaceableInteract* object = Cast<APlaceableInteract>(hit.GetActor());
+			if (object)
+			{
+				displayObjectInteract = true;
+				lookAtObject = object;
+				object->player = this;
+
+				displayItemPickUp = false;
+				lookedAtItem = nullptr;
+
+				return;
+			}
 		}
 	}
 
 	displayItemPickUp = false;
 	lookedAtItem = nullptr;
+	displayObjectInteract = false;
+	lookAtObject = nullptr;
 }
+
+void ABaseCharacter::InteractWithObject()
+{
+	FHitResult hit = LineTraceCamera();
+	if (hit.bBlockingHit)
+	{
+		APlaceableInteract* object = Cast<APlaceableInteract>(hit.GetActor());
+		if (object)
+		{
+			GLog->Log("Item Hit");
+			object->InteractWithObject(this);
+		}
+		else { GLog->Log("No Item"); }
+	}
+}
+
+
 
 
