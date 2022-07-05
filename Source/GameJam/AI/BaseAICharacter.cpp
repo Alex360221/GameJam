@@ -3,12 +3,14 @@
 
 #include "BaseAICharacter.h"
 #include <GameJam/BaseCharacter.h>
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 ABaseAICharacter::ABaseAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 
 	targetLocation = FVector(0, 0, 0);
 }
@@ -38,11 +40,14 @@ void ABaseAICharacter::CalculateTargetLocation()
 
 }
 
-void ABaseAICharacter::FollowPlayer()
+void ABaseAICharacter::FollowPlayer(float dis)
 {
 	if (player)
 	{
-		targetLocation = player->GetActorLocation();
+		FVector dir = GetActorLocation() - player->GetActorLocation();
+		dir.Normalize();
+		
+		targetLocation = (dir * dis)+ player->GetActorLocation();
 	}
 }
 

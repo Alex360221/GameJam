@@ -25,14 +25,14 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool followPlayer = false;
 
 private:
 	bool moveToPlayer = false;
 	bool shouldMove = false;
 
 	bool ShouldStartMove();
-	bool ShouldStopMove();
-
-
-	
+	bool ShouldStopMove();	
 };

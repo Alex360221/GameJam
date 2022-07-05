@@ -33,7 +33,7 @@ public:
 
 	void CalculateTargetLocation();
 
-	void FollowPlayer();
+	void FollowPlayer(float dis);
 
 	float DisToPlayer();
 
