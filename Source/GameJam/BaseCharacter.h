@@ -40,6 +40,15 @@ public:
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
 
+	//player stats
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float currentHealth;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float maxHealth;
+private:
+	float currentStatTimer;
+
+public:
 
 //inventory
 	TArray<class ABaseItemClass*> inventory;
@@ -72,6 +81,8 @@ public:
 
 	void InteractWithObject();
 	
-
+private:
+	//stat fucntions
+	void Regen();
 
 };

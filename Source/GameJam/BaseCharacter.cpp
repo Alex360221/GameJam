@@ -14,6 +14,9 @@ ABaseCharacter::ABaseCharacter()
 
 	playerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 
+	maxHealth = 100;
+	currentHealth = 50;
+	currentStatTimer = 0;
 
 }
 
@@ -29,7 +32,12 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	IsPlayingLookingAtItem();
-
+	currentStatTimer += DeltaTime;
+	if (currentStatTimer > 0.1)
+	{
+		currentStatTimer = 0;
+		Regen();
+	}
 }
 
 // Called to bind functionality to input
@@ -153,6 +161,18 @@ void ABaseCharacter::InteractWithObject()
 			object->InteractWithObject(this);
 		}
 		else { GLog->Log("No Item"); }
+	}
+}
+
+void ABaseCharacter::Regen()
+{
+	if (currentHealth + 0.2 <= maxHealth)
+	{
+		currentHealth += 0.2;
+	}
+	else
+	{
+		currentHealth = maxHealth;
 	}
 }
 
