@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Items/BaseItemClass.h"
 #include "Map/PlaceableInteract.h"
+#include "AI/BaseAICompanion.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -61,6 +62,21 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("InteractWithObject", IE_Pressed, this, &ABaseCharacter::InteractWithObject);
 
 
+}
+
+void ABaseCharacter::ReSpawn(FVector respawnPoint, FVector respawnDir)
+{
+	currentHealth = maxHealth;
+
+	if (companion)
+	{
+		if (companion->followPlayer)
+		{
+			FVector point = (respawnDir * 100) + respawnPoint;
+			companion->SetActorLocation(point);
+			companion->targetLocation = point;
+		}
+	}
 }
 
 void ABaseCharacter::PickUpUtem()
