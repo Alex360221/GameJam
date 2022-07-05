@@ -50,6 +50,9 @@ private:
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+		void ReSpawn(FVector respawnPoint, FVector respawnDir);
+
 //inventory
 	TArray<class ABaseItemClass*> inventory;
 
