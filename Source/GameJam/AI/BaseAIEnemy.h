@@ -29,6 +29,12 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool randomWalking = false;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float health = 100.f;
+
+public: 
+	void DamageEnemy(float damageAmount);
 
 private:
 	bool moveToPlayer = false;

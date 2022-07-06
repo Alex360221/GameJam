@@ -20,29 +20,43 @@ void ABaseAIEnemy::BeginPlay()
 void ABaseAIEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!moveToPlayer)
+	if (health <= 0)
 	{
-		//should Attack?
-		if (WithinDistance(150)) { AttackPlayer(DeltaTime); }
-		else 
-		{
-			attackTimer = 0.f;
-			if (ShouldStartMove())
-			{
-				moveToPlayer = true;
-				randomWalking = false;
-			}
-			else
-			{
-				randomWalking = true;
-			}
-		}
+		moveToPlayer = false;
+		randomWalking = false;
+		targetLocation = GetActorLocation();
 	}
 	else
 	{
-		if (!ShouldStopMove()) { FollowPlayer(50); }
-		else { moveToPlayer = false; }
+		if (!moveToPlayer)
+		{
+			//should Attack?
+			if (WithinDistance(150)) { AttackPlayer(DeltaTime); }
+			else
+			{
+				attackTimer = 0.f;
+				if (ShouldStartMove())
+				{
+					moveToPlayer = true;
+					randomWalking = false;
+				}
+				else
+				{
+					randomWalking = true;
+				}
+			}
+		}
+		else
+		{
+			if (!ShouldStopMove()) { FollowPlayer(50); }
+			else { moveToPlayer = false; }
+		}
 	}
+}
+
+void ABaseAIEnemy::DamageEnemy(float damageAmount)
+{
+	health -= damageAmount;
 }
 
 bool ABaseAIEnemy::ShouldStartMove()
