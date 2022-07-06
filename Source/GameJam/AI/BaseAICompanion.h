@@ -28,6 +28,7 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool followPlayer = false;
+	bool companionInteractSet = false;
 
 private:
 	bool moveToPlayer = false;

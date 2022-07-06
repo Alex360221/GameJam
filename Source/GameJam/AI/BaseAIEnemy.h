@@ -47,7 +47,7 @@ private:
 
 	void AttackPlayer(float dt);
 	bool attackPlayer = false;
-	float attackTimer = 0.f;
+	float attackTimer = 1.f;
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool runAttack = false;
