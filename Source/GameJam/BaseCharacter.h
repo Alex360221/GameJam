@@ -40,6 +40,16 @@ public:
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
 
+	// Function that handles firing projectiles.
+	UFUNCTION()
+		void Fire();
+	// Gun muzzle offset from the camera location.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		FVector MuzzleOffset;
+	// Projectile class to spawn.
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABaseProjectile> ProjectileClass;
+
 	//player stats
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float currentHealth;
@@ -66,7 +76,7 @@ private:
 	//Adds item to inventory
 	void AddItemToInventory(class ABaseItemClass* item);
 
-	FHitResult LineTraceCamera();
+	FHitResult LineTraceCamera(AActor* ingoreActor, float lineLength);
 
 	//will dertimne if the player is looking at an item
 	void IsPlayingLookingAtItem();

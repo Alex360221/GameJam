@@ -2,10 +2,13 @@
 
 
 #include "BaseCharacter.h"
+#include "BaseProjectile.h"
 #include "Components/StaticMeshComponent.h"
 #include "Items/BaseItemClass.h"
 #include "Map/PlaceableInteract.h"
 #include "AI/BaseAICompanion.h"
+#include "AI/BaseAIEnemy.h"
+
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -58,10 +61,75 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABaseCharacter::EndJump);
 
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABaseCharacter::Fire);
+
 	PlayerInputComponent->BindAction("PickUpItem", IE_Pressed, this, &ABaseCharacter::PickUpUtem);
 	PlayerInputComponent->BindAction("InteractWithObject", IE_Pressed, this, &ABaseCharacter::InteractWithObject);
 
 
+}
+
+void ABaseCharacter::Fire()
+{
+	// Attempt to fire a projectile.
+	if (ProjectileClass)
+	{
+		// Get the camera transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
+		MuzzleOffset.Set(30.0f, 0.0f, 0.0f);
+
+
+		// Transform MuzzleOffset from camera space to world space.
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+
+		// Skew the aim to be slightly upwards.
+		FRotator MuzzleRotation = CameraRotation;
+		MuzzleRotation.Pitch += 10.0f;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ABaseProjectile* Projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				APlayerCameraManager* playerCameraManger = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
+				// Set the projectile's initial trajectory.
+				//FVector LaunchDirection = MuzzleRotation.Vector();
+				FVector LaunchDirection = playerCameraManger->GetActorForwardVector();
+				Projectile->FireInDirection(LaunchDirection,this);
+
+				//Do line trace to see if it will hit anything
+				
+				FVector start = playerCameraManger->GetCameraLocation();
+				FVector forwardVector = playerCameraManger->GetActorForwardVector();
+				FVector end = (forwardVector * 3000) + start;
+				FCollisionQueryParams collisionsParms;
+				if (Projectile) { collisionsParms.AddIgnoredActor(Projectile->GetUniqueID()); }
+				FHitResult hit;
+				GetWorld()->LineTraceSingleByChannel(hit, start, end, ECC_Visibility, collisionsParms);
+				
+				if (hit.bBlockingHit)
+				{
+					GLog->Log("Hit Something " + hit.Actor->GetName());
+					ABaseAIEnemy* enemy = Cast<ABaseAIEnemy>(hit.Actor);
+					if (enemy)
+					{
+						GLog->Log("Hit Enemy!!!!!!!!!!!");
+						//enemy->Destroy();
+					}
+				}
+			}
+		}
+	}
 }
 
 void ABaseCharacter::ReSpawn(FVector respawnPoint, FVector respawnDir)
@@ -81,7 +149,7 @@ void ABaseCharacter::ReSpawn(FVector respawnPoint, FVector respawnDir)
 
 void ABaseCharacter::PickUpUtem()
 {
-	FHitResult hit = LineTraceCamera();
+	FHitResult hit = LineTraceCamera(nullptr, 400);
 	if (hit.bBlockingHit)
 	{
 		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
@@ -112,14 +180,15 @@ bool ABaseCharacter::PlayerHasItem(FString itemName)
 	return false;
 }
 
-FHitResult ABaseCharacter::LineTraceCamera()
+FHitResult ABaseCharacter::LineTraceCamera(AActor* ingoreActor, float lineLength)
 {
 	//GLog->Log("Line Trace add");
 	APlayerCameraManager* playerCameraManger = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
 	FVector start = playerCameraManger->GetCameraLocation();
 	FVector forwardVector = playerCameraManger->GetActorForwardVector();
-	FVector end = (forwardVector * 400) + start;
+	FVector end = (forwardVector * lineLength) + start;
 	FCollisionQueryParams collisionsParms;
+	if (ingoreActor) { collisionsParms.AddIgnoredActor(ingoreActor->GetUniqueID()); }
 	FHitResult outHit;
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, end, ECC_Visibility, collisionsParms);
 	return outHit;
@@ -127,7 +196,7 @@ FHitResult ABaseCharacter::LineTraceCamera()
 
 void ABaseCharacter::IsPlayingLookingAtItem()
 {
-	FHitResult hit = LineTraceCamera();
+	FHitResult hit = LineTraceCamera(nullptr, 400);
 	if (hit.bBlockingHit)
 	{
 		ABaseItemClass* item = Cast<ABaseItemClass>(hit.GetActor());
@@ -168,7 +237,7 @@ void ABaseCharacter::IsPlayingLookingAtItem()
 
 void ABaseCharacter::InteractWithObject()
 {
-	FHitResult hit = LineTraceCamera();
+	FHitResult hit = LineTraceCamera(nullptr, 400);
 	if (hit.bBlockingHit)
 	{
 		APlaceableInteract* object = Cast<APlaceableInteract>(hit.GetActor());
