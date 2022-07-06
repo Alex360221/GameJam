@@ -76,7 +76,7 @@ private:
 	//Adds item to inventory
 	void AddItemToInventory(class ABaseItemClass* item);
 
-	FHitResult LineTraceCamera();
+	FHitResult LineTraceCamera(AActor* ingoreActor, float lineLength);
 
 	//will dertimne if the player is looking at an item
 	void IsPlayingLookingAtItem();

@@ -91,35 +91,35 @@ void ABaseProjectile::FireInDirection(const FVector& ShootDirection, AActor* ing
 
 void ABaseProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
-    {
-        GLog->Log("Hit physics");
-      //  OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
-    }
+    //if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
+    //{
+    //    GLog->Log("Hit physics");
+    //  //  OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+    //}
 
 
-    //hit enemy?
-    AActor* actor = Cast<AActor>(Hit.Actor);
-    if (actor)
-    {
-        GLog->Log("Hit Something " + Hit.Actor->GetName());
-       /* GLog->Log("Hit Actor");
-        ACharacter* character = Cast<ACharacter>(actor);
-        if(character)
-        {
-            GLog->Log("Hit character");
-            ABaseAICharacter* hitAI = Cast<ABaseAICharacter>(actor);
-            if (hitAI)
-            {*/
-                GLog->Log("Hit AI!!!");
-                ABaseAIEnemy* enemy = Cast<ABaseAIEnemy>(actor);
-                if (enemy)
-                {
-                    GLog->Log("Hit Enemy");
-                }
-        /*    }
-        } */           
-    }
+    ////hit enemy?
+    //AActor* actor = Cast<AActor>(Hit.Actor);
+    //if (actor)
+    //{
+    //    GLog->Log("Hit Something " + Hit.Actor->GetName());
+    //   /* GLog->Log("Hit Actor");
+    //    ACharacter* character = Cast<ACharacter>(actor);
+    //    if(character)
+    //    {
+    //        GLog->Log("Hit character");
+    //        ABaseAICharacter* hitAI = Cast<ABaseAICharacter>(actor);
+    //        if (hitAI)
+    //        {*/
+    //            GLog->Log("Hit AI!!!");
+    //            ABaseAIEnemy* enemy = Cast<ABaseAIEnemy>(actor);
+    //            if (enemy)
+    //            {
+    //                GLog->Log("Hit Enemy");
+    //            }
+    //    /*    }
+    //    } */           
+    //}
     
     Destroy();
 }
