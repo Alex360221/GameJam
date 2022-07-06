@@ -42,6 +42,17 @@ void ABaseCharacter::Tick(float DeltaTime)
 		currentStatTimer = 0;
 		Regen();
 	}
+
+	fireLastCounter += DeltaTime;
+	if (fireDown)
+	{
+		if (fireLastCounter >= fireCounterLimit)
+		{
+			fireLastCounter = 0;
+			Fire();
+		}
+	}
+
 }
 
 // Called to bind functionality to input
@@ -61,7 +72,8 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ABaseCharacter::EndJump);
 
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABaseCharacter::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABaseCharacter::FireDown);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ABaseCharacter::FireUp);
 
 	PlayerInputComponent->BindAction("PickUpItem", IE_Pressed, this, &ABaseCharacter::PickUpUtem);
 	PlayerInputComponent->BindAction("InteractWithObject", IE_Pressed, this, &ABaseCharacter::InteractWithObject);

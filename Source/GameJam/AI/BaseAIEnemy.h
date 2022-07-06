@@ -35,6 +35,8 @@ public:
 
 public: 
 	void DamageEnemy(float damageAmount);
+	UFUNCTION(BlueprintCallable)
+		void DamagePlayer(float damageAmount);
 
 private:
 	bool moveToPlayer = false;
@@ -46,4 +48,7 @@ private:
 	void AttackPlayer(float dt);
 	bool attackPlayer = false;
 	float attackTimer = 0.f;
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool runAttack = false;
 };

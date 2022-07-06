@@ -2,6 +2,7 @@
 
 
 #include "BaseAIEnemy.h"
+#include <GameJam/BaseCharacter.h>
 
 ABaseAIEnemy::ABaseAIEnemy()
 {
@@ -59,6 +60,18 @@ void ABaseAIEnemy::DamageEnemy(float damageAmount)
 	health -= damageAmount;
 }
 
+void ABaseAIEnemy::DamagePlayer(float damageAmount)
+{
+	if (player)
+	{
+		if (WithinDistance(150))
+		{
+			GLog->Log("Damage Player");
+			player->currentHealth -= damageAmount;
+		}
+	}
+}
+
 bool ABaseAIEnemy::ShouldStartMove()
 {
 	if (DisToPlayer() < attackRange)
@@ -95,5 +108,7 @@ void ABaseAIEnemy::AttackPlayer(float dt)
 	{
 		attackTimer = 0.f;
 		GLog->Log("Attack player");
+		runAttack = true;
+		//DamagePlayer(30.f);
 	}
 }
