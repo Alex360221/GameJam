@@ -2,6 +2,8 @@
 
 
 #include "BaseAICompanion.h"
+#include <GameJam/BaseProjectile.h>
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ABaseAICompanion::ABaseAICompanion()
@@ -61,6 +63,29 @@ bool ABaseAICompanion::ShouldStopMove()
 		return true;
 	}
 	return false;
+}
+
+void ABaseAICompanion::FireAtTarget(FVector target)
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		FRotator rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
+		FVector dir = target - GetActorLocation();
+		dir.Normalize();
+		// Spawn the projectile at the muzzle.
+		ABaseProjectile* projectile = World->SpawnActor<ABaseProjectile>(ProjectileClass, GetActorLocation() + (dir * 30), 
+			rotator, SpawnParams);
+		if (projectile)
+		{
+			
+			projectile->FireInDirection(dir, this);
+		}
+	}
 }
 
 

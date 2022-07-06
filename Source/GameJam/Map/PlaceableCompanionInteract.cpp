@@ -27,16 +27,58 @@ void APlaceableCompanionInteract::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!companion) { return; }
-	if (CompanionWithinRange(GetActorLocation(), companionActivateDistance))
-	{	
-		if (CompanionWithinRange(companionTargetPoint, 50))
+	if (!doneInteract)
+	{
+		if (CompanionWithinRange(GetActorLocation(), companionActivateDistance))
 		{
-			GLog->Log("Companion At Target Point");
+			//GLog->Log("Companion Within range");
+			if (CompanionWithinRange(companionTargetPoint, 50))
+			{
+				GLog->Log("Companion At Target Point");
+				if (!hasCalledShooting)
+				{
+					GLog->Log("Start shooting");
+					hasCalledShooting = true;
+					shooting = true;
+					//companion->FireAtTarget(companionShootTargetPoint); 
+				}
+				else
+				{
+					if (shooting)
+					{
+						if (shotCount <= shots)
+						{
+							shotTimer += DeltaTime;
+							if (shotTimer >= timeBetweenShots)
+							{
+								shotTimer = 0.f;
+								shotCount++;
+								GLog->Log("Fire Shot");
+								companion->FireAtTarget(companionShootTargetPoint);
+							}
+						}
+						else
+						{
+							shooting = false;
+							doneInteract = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				companion->targetLocation = companionTargetPoint;
+			}
 		}
-		else 
+	}
+	else
+	{
+		doneInteractTimer += DeltaTime;
+		if (doneInteractTimer >= destroyDelay)
 		{
-			companion->targetLocation = companionTargetPoint;
-		}
+			GLog->Log("Done inetracrtion!!!!!!!!");
+			Destroy();
+		}		
 	}
 
 }
@@ -45,7 +87,8 @@ bool APlaceableCompanionInteract::CompanionWithinRange(FVector target, float dis
 {
 	if (companion)
 	{
-		if (FVector::Distance(target, companion->GetActorLocation()) <= distance)
+		float dis = FVector2D::Distance(FVector2D(target), FVector2D(companion->GetActorLocation()));
+		if (dis <= distance)
 		{
 			return true;
 		}

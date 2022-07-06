@@ -29,10 +29,16 @@ void ABaseAIEnemy::Tick(float DeltaTime)
 	}
 	else
 	{
-		if (!moveToPlayer)
+		attackTimer += DeltaTime;
+		if (WithinDistance(50))
+		{
+			//GLog->Log("Within distacne to attack");
+			moveToPlayer = false;		
+			AttackPlayer(DeltaTime);
+		}
+		else if (!moveToPlayer)
 		{
 			//should Attack?
-			attackTimer += DeltaTime;
 			if (WithinDistance(150)) { AttackPlayer(DeltaTime); }
 			else
 			{

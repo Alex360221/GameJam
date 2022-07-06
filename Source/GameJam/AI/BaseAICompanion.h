@@ -36,4 +36,11 @@ private:
 
 	bool ShouldStartMove();
 	bool ShouldStopMove();	
+public:
+	//will cause the comoanion to fire at the target
+	void FireAtTarget(FVector target);
+
+	// Projectile class to spawn.
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABaseProjectile> ProjectileClass;
 };

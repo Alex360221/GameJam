@@ -33,7 +33,24 @@ public:
 		float companionActivateDistance = 500;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FVector companionTargetPoint;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FVector companionShootTargetPoint;
+
 
 	bool CompanionWithinRange(FVector target, float distance);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		int shots = 10;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float timeBetweenShots = 0.5f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float destroyDelay = 1.f;
 
+private:
+	bool hasCalledShooting = false;
+	bool shooting = false;
+	
+	int shotCount = 0;
+	float shotTimer = 0.f;
+	bool doneInteract = false;
+	float doneInteractTimer = 0.f;
 };
