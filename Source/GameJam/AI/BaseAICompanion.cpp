@@ -25,7 +25,7 @@ void ABaseAICompanion::BeginPlay()
 void ABaseAICompanion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (followPlayer)
+	if (followPlayer && !companionInteractSet)
 	{
 		if (!moveToPlayer)
 		{
