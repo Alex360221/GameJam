@@ -39,6 +39,15 @@ public:
 
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
+private:
+
+	bool fireDown = false;
+	float fireLastCounter = 0;
+	void FireDown() { fireDown = true; }
+	void FireUp() { fireDown = false; }
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float fireCounterLimit = 1.f;
 
 	// Function that handles firing projectiles.
 	UFUNCTION()
