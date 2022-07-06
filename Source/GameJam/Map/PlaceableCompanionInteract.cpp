@@ -4,6 +4,8 @@
 #include "PlaceableCompanionInteract.h"
 #include "Components/StaticMeshComponent.h"
 #include <GameJam/AI/BaseAICompanion.h>
+#include <GameJam/BaseCharacter.h>
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 APlaceableCompanionInteract::APlaceableCompanionInteract()
@@ -26,61 +28,76 @@ void APlaceableCompanionInteract::BeginPlay()
 void APlaceableCompanionInteract::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	if (!companion) { return; }
-	if (!doneInteract)
-	{
-		if (CompanionWithinRange(GetActorLocation(), companionActivateDistance))
+
+	if (toggleOn)
+	{		
+		if (!doneInteract)
 		{
-			//GLog->Log("Companion Within range");
-			if (CompanionWithinRange(companionTargetPoint, 50))
+			if (character)
 			{
-				GLog->Log("Companion At Target Point");
-				if (!hasCalledShooting)
+				float playerDis = FVector::Distance(character->GetActorLocation(), playerStopPoint);
+				if (playerDis <= playerStopDistance)
 				{
-					GLog->Log("Start shooting");
-					hasCalledShooting = true;
-					shooting = true;
-					//companion->FireAtTarget(companionShootTargetPoint); 
+					character->stopInput = true;
+					FRotator rotator = UKismetMathLibrary::FindLookAtRotation(character->GetActorLocation(), playerLookAtPoint);
+					character->GetController()->SetControlRotation(rotator);
 				}
-				else
+			}
+			if (CompanionWithinRange(GetActorLocation(), companionActivateDistance))
+			{
+				GLog->Log("Companion Within range");
+				if (CompanionWithinRange(companionTargetPoint, 50))
 				{
-					if (shooting)
+					GLog->Log("Companion At Target Point");
+					if (!hasCalledShooting)
 					{
-						if (shotCount <= shots)
+						GLog->Log("Start shooting");
+						hasCalledShooting = true;
+						shooting = true;
+						//companion->FireAtTarget(companionShootTargetPoint); 
+					}
+					else
+					{
+						if (shooting)
 						{
-							shotTimer += DeltaTime;
-							if (shotTimer >= timeBetweenShots)
+							if (shotCount <= shots)
 							{
-								shotTimer = 0.f;
-								shotCount++;
-								GLog->Log("Fire Shot");
-								companion->FireAtTarget(companionShootTargetPoint);
+								shotTimer += DeltaTime;
+								if (shotTimer >= timeBetweenShots)
+								{
+									shotTimer = 0.f;
+									shotCount++;
+									GLog->Log("Fire Shot");
+									companion->FireAtTarget(companionShootTargetPoint);
+								}
 							}
-						}
-						else
-						{
-							shooting = false;
-							doneInteract = true;
+							else
+							{
+								shooting = false;
+								doneInteract = true;
+							}
 						}
 					}
 				}
+				else
+				{
+					companion->targetLocation = companionTargetPoint;
+				}
 			}
-			else
+		}
+		else
+		{
+			doneInteractTimer += DeltaTime;
+			if (doneInteractTimer >= destroyDelay)
 			{
-				companion->targetLocation = companionTargetPoint;
+				GLog->Log("Done inetracrtion!!!!!!!!");
+				if (character) { character->stopInput = false; }
+				Destroy();
 			}
 		}
 	}
-	else
-	{
-		doneInteractTimer += DeltaTime;
-		if (doneInteractTimer >= destroyDelay)
-		{
-			GLog->Log("Done inetracrtion!!!!!!!!");
-			Destroy();
-		}		
-	}
-
 }
 
 bool APlaceableCompanionInteract::CompanionWithinRange(FVector target, float distance)

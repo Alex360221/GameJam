@@ -30,15 +30,18 @@ public:
 		class UStaticMeshComponent* playerMesh;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseAICompanion* companion;
+	bool stopInput = false;
 
-	void MoveForward(float axis) { AddMovementInput(GetActorForwardVector(), axis); }
-	void MoveRight(float axis) { AddMovementInput(GetActorRightVector(), axis); }
+	void MoveForward(float axis) { if (!stopInput) { AddMovementInput(GetActorForwardVector(), axis); } }
+	void MoveRight(float axis) { if (!stopInput) { AddMovementInput(GetActorRightVector(), axis); } }
 
-	void TurnAtRate(float axis) { ABaseCharacter::AddControllerYawInput(axis); }
-	void LookUpRate(float axis) { ABaseCharacter::AddControllerPitchInput(axis); }
+	void TurnAtRate(float axis) { if (!stopInput) { ABaseCharacter::AddControllerYawInput(axis); } }
+	void LookUpRate(float axis) { if (!stopInput) { ABaseCharacter::AddControllerPitchInput(axis); } }
 
-	void StartJump() { ABaseCharacter::Jump(); }
-	void EndJump() { ABaseCharacter::StopJumping(); }
+	void StartJump() { if (!stopInput) { ABaseCharacter::Jump(); } }
+	void EndJump() { if (!stopInput) { ABaseCharacter::StopJumping(); } }
+
+	
 private:
 
 	bool fireDown = false;

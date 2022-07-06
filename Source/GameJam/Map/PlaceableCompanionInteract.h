@@ -25,6 +25,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class UStaticMeshComponent* objectMesh;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		class ABaseCharacter* character;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseAICompanion* companion;
@@ -35,7 +37,14 @@ public:
 		FVector companionTargetPoint;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		FVector companionShootTargetPoint;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FVector playerStopPoint;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float playerStopDistance = 300.f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		FVector playerLookAtPoint;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool toggleOn = false;
 
 	bool CompanionWithinRange(FVector target, float distance);
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
