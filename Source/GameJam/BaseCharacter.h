@@ -90,7 +90,8 @@ public:
 		bool displayObjectInteract = false;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class APlaceableInteract* lookAtObject;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		float damageAmount = 30.f;
 
 	void InteractWithObject();
 	

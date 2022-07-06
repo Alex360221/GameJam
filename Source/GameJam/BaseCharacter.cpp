@@ -124,6 +124,7 @@ void ABaseCharacter::Fire()
 					if (enemy)
 					{
 						GLog->Log("Hit Enemy!!!!!!!!!!!");
+						enemy->DamageEnemy(damageAmount);
 						//enemy->Destroy();
 					}
 				}
