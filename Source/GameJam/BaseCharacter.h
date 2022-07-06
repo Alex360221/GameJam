@@ -40,6 +40,16 @@ public:
 	void StartJump() { ABaseCharacter::Jump(); }
 	void EndJump() { ABaseCharacter::StopJumping(); }
 
+	// Function that handles firing projectiles.
+	UFUNCTION()
+		void Fire();
+	// Gun muzzle offset from the camera location.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		FVector MuzzleOffset;
+	// Projectile class to spawn.
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABaseProjectile> ProjectileClass;
+
 	//player stats
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float currentHealth;
