@@ -78,6 +78,10 @@ public:
 //inventory
 	TArray<class ABaseItemClass*> inventory;
 
+	//add Item to inventory
+	UFUNCTION(BlueprintCallable)
+		//Adds item to inventory
+		void AddItemToInventory(class ABaseItemClass* item);
 	//will pick up item
 	void PickUpUtem();
 	UFUNCTION(BlueprintCallable)
@@ -85,8 +89,7 @@ public:
 
 private:
 
-	//Adds item to inventory
-	void AddItemToInventory(class ABaseItemClass* item);
+	
 
 	FHitResult LineTraceCamera(AActor* ingoreActor, float lineLength);
 
