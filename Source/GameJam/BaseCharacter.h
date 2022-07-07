@@ -30,6 +30,8 @@ public:
 		class UStaticMeshComponent* playerMesh;
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		USoundBase* sound;
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+		USoundBase* sound1;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseAICompanion* companion;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

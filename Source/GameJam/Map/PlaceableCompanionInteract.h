@@ -28,6 +28,8 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		USoundBase* sound;
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+		USoundBase* sound1;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool inCave = true;

@@ -39,7 +39,7 @@ void ABaseAIEnemy::Tick(float DeltaTime)
 		else if (!moveToPlayer)
 		{
 			//should Attack?
-			if (WithinDistance(150)) { AttackPlayer(DeltaTime); }
+			if (WithinDistance(250)) { AttackPlayer(DeltaTime); }
 			else
 			{
 				attackTimer = 0.f;

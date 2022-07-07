@@ -40,6 +40,7 @@ public:
 		USoundBase* sound;
 
 
+
 	// Projectile material
 	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
 		UMaterialInstanceDynamic* ProjectileMaterialInstance;

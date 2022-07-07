@@ -15,7 +15,6 @@ APlaceableCompanionInteract::APlaceableCompanionInteract()
 	PrimaryActorTick.bCanEverTick = true;
 
 	objectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object Mesh"));
-
 	if (!sound)
 	{
 		sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
@@ -24,6 +23,16 @@ APlaceableCompanionInteract::APlaceableCompanionInteract()
 		if (sounda.Succeeded())
 		{
 			sound = sounda.Object;
+		}
+	}
+	if (!sound1)
+	{
+		sound1 = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+
+		static ConstructorHelpers::FObjectFinder<USoundBase>soundb(TEXT("SoundWave'/Game/Sounds/BreakStuff.BreakStuff'"));
+		if (soundb.Succeeded())
+		{
+			sound1 = soundb.Object;
 		}
 	}
 
@@ -68,7 +77,7 @@ void APlaceableCompanionInteract::Tick(float DeltaTime)
 						GLog->Log("Start shooting");
 						hasCalledShooting = true;
 						shooting = true;				
-						if (inCave) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.5f, 1.f, 0.f, nullptr, nullptr); }
+						if (inCave) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.1f, 1.f, 0.f, nullptr, nullptr); }
 						//companion->FireAtTarget(companionShootTargetPoint); 
 					}
 					else
@@ -105,7 +114,7 @@ void APlaceableCompanionInteract::Tick(float DeltaTime)
 			doneInteractTimer += DeltaTime;
 			if (doneInteractTimer >= destroyDelay)
 			{
-
+				if(!inCave) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound1, GetActorLocation(), 0.5f, 1.f, 0.f, nullptr, nullptr); }
 				GLog->Log("Done inetracrtion!!!!!!!!");
 				if (character) { character->stopInput = false; }
 				Destroy();

@@ -31,6 +31,8 @@ public:
 		class ABaseCharacter* player;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		bool hideAfterInteract = true;
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+		USoundBase* sound;
 
 	void InteractWithObject(class ABaseCharacter* newPlayer);
 

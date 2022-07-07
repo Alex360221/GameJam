@@ -4,6 +4,7 @@
 #include "PlaceableInteract.h"
 #include "Components/StaticMeshComponent.h"
 #include <GameJam/BaseCharacter.h>
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlaceableInteract::APlaceableInteract()
@@ -14,6 +15,17 @@ APlaceableInteract::APlaceableInteract()
 	objectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object Mesh"));
 	objectMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	requiredItem = "Enter Item";
+
+	if (!sound)
+	{
+		sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+
+		static ConstructorHelpers::FObjectFinder<USoundBase>sounda(TEXT("SoundWave'/Game/Sounds/BreakStuff.BreakStuff'"));
+		if (sounda.Succeeded())
+		{
+			sound = sounda.Object;
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +63,7 @@ void APlaceableInteract::RemoveWall()
 	{
 		if (hideAfterInteract)
 		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.5f, 1.f, 0.f, nullptr, nullptr);
 			objectMesh->SetHiddenInGame(true);
 			objectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}

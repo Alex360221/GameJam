@@ -20,7 +20,7 @@ ABaseCharacter::ABaseCharacter()
 	playerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 
 	maxHealth = 100;
-	currentHealth = 50;
+	currentHealth = 100;
 	currentStatTimer = 0;
 
 	if (!sound)
@@ -31,6 +31,17 @@ ABaseCharacter::ABaseCharacter()
 		if (sounda.Succeeded())
 		{
 			sound = sounda.Object;
+		}
+	}
+
+	if (!sound1)
+	{
+		sound1 = CreateDefaultSubobject<USoundBase>(TEXT("Sound1"));
+
+		static ConstructorHelpers::FObjectFinder<USoundBase>soundb(TEXT("SoundWave'/Game/Sounds/HitNoise.HitNoise'"));
+		if (soundb.Succeeded())
+		{
+			sound1 = soundb.Object;
 		}
 	}
 
@@ -148,6 +159,7 @@ void ABaseCharacter::Fire()
 					if (enemy)
 					{
 						GLog->Log("Hit Enemy!!!!!!!!!!!");
+						UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound1, GetActorLocation(), 0.7f, 1.f, 0.f, nullptr, nullptr);
 						enemy->DamageEnemy(damageAmount);
 						//enemy->Destroy();
 					}
