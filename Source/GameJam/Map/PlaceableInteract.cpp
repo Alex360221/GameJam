@@ -49,8 +49,11 @@ void APlaceableInteract::RemoveWall()
 {
 	if (player)
 	{
-		objectMesh->SetHiddenInGame(true);
-		objectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (hideAfterInteract)
+		{
+			objectMesh->SetHiddenInGame(true);
+			objectMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
 	}
 }
 

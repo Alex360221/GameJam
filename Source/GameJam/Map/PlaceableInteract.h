@@ -29,6 +29,8 @@ public:
 		FString requiredItem;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseCharacter* player;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool hideAfterInteract = true;
 
 	void InteractWithObject(class ABaseCharacter* newPlayer);
 

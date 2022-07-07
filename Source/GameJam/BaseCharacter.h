@@ -30,6 +30,8 @@ public:
 		class UStaticMeshComponent* playerMesh;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseAICompanion* companion;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool stopFire = true;
 	bool stopInput = false;
 
 	void MoveForward(float axis) { if (!stopInput) { AddMovementInput(GetActorForwardVector(), axis); } }
@@ -46,8 +48,8 @@ private:
 
 	bool fireDown = false;
 	float fireLastCounter = 0;
-	void FireDown() { fireDown = true; }
-	void FireUp() { fireDown = false; }
+	void FireDown() { if (!stopFire) { fireDown = true; } }
+	void FireUp() { if (!stopFire) { fireDown = false; } }
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		float fireCounterLimit = 1.f;

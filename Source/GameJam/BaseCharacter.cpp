@@ -92,7 +92,7 @@ void ABaseCharacter::Fire()
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 		// Set MuzzleOffset to spawn projectiles slightly in front of the camera.
-		MuzzleOffset.Set(30.0f, 0.0f, 0.0f);
+		//MuzzleOffset.Set(30.0f, 0.0f, 0.0f);
 
 
 		// Transform MuzzleOffset from camera space to world space.
