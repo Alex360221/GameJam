@@ -177,6 +177,7 @@ void ABaseCharacter::PickUpUtem()
 
 void ABaseCharacter::AddItemToInventory(ABaseItemClass* item)
 {
+	if (!item) { return; }
 	//Adds item to inventory
 	inventory.Add(item);
 	item->SetActorEnableCollision(false);
