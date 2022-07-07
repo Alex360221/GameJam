@@ -36,6 +36,9 @@ public:
 	// Projectile mesh
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 		UStaticMeshComponent* ProjectileMeshComponent;
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+		USoundBase* sound;
+
 
 	// Projectile material
 	UPROPERTY(VisibleDefaultsOnly, Category = Movement)

@@ -6,6 +6,7 @@
 #include <GameJam/AI/BaseAICompanion.h>
 #include <GameJam/BaseCharacter.h>
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlaceableCompanionInteract::APlaceableCompanionInteract()
@@ -14,6 +15,17 @@ APlaceableCompanionInteract::APlaceableCompanionInteract()
 	PrimaryActorTick.bCanEverTick = true;
 
 	objectMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object Mesh"));
+
+	if (!sound)
+	{
+		sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+
+		static ConstructorHelpers::FObjectFinder<USoundBase>sounda(TEXT("SoundWave'/Game/Sounds/FloorBreaks.FloorBreaks'"));
+		if (sounda.Succeeded())
+		{
+			sound = sounda.Object;
+		}
+	}
 
 }
 
@@ -55,7 +67,8 @@ void APlaceableCompanionInteract::Tick(float DeltaTime)
 					{
 						GLog->Log("Start shooting");
 						hasCalledShooting = true;
-						shooting = true;
+						shooting = true;				
+						if (inCave) { UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.5f, 1.f, 0.f, nullptr, nullptr); }
 						//companion->FireAtTarget(companionShootTargetPoint); 
 					}
 					else
@@ -92,9 +105,11 @@ void APlaceableCompanionInteract::Tick(float DeltaTime)
 			doneInteractTimer += DeltaTime;
 			if (doneInteractTimer >= destroyDelay)
 			{
+
 				GLog->Log("Done inetracrtion!!!!!!!!");
 				if (character) { character->stopInput = false; }
 				Destroy();
+
 			}
 		}
 	}

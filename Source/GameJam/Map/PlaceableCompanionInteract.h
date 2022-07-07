@@ -25,6 +25,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class UStaticMeshComponent* objectMesh;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+		USoundBase* sound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		bool inCave = true;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 		class ABaseCharacter* character;
 	

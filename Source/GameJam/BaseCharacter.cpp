@@ -8,6 +8,7 @@
 #include "Map/PlaceableInteract.h"
 #include "AI/BaseAICompanion.h"
 #include "AI/BaseAIEnemy.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -21,6 +22,17 @@ ABaseCharacter::ABaseCharacter()
 	maxHealth = 100;
 	currentHealth = 50;
 	currentStatTimer = 0;
+
+	if (!sound)
+	{
+		sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+
+		static ConstructorHelpers::FObjectFinder<USoundBase>sounda(TEXT("SoundWave'/Game/Sounds/PickingUpItem.PickingUpItem'"));
+		if (sounda.Succeeded())
+		{
+			sound = sounda.Object;
+		}
+	}
 
 }
 
@@ -169,6 +181,7 @@ void ABaseCharacter::PickUpUtem()
 		if (item)
 		{
 			GLog->Log("Item Hit");
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.7f, 1.f, 0.f, nullptr, nullptr);
 			AddItemToInventory(item);
 		}
 		else { GLog->Log("No Item"); }

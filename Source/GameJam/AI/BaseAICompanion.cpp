@@ -42,7 +42,12 @@ void ABaseAICompanion::Tick(float DeltaTime)
 			else { moveToPlayer = false; }
 		}
 	}
-	else { moveToPlayer = false; }
+	else 
+	{ 
+		moveToPlayer = false; 
+		//is too close to player if so move behind player
+
+	}
 }
 
 bool ABaseAICompanion::ShouldStartMove()

@@ -3,6 +3,7 @@
 
 #include "BaseProjectile.h"
 #include "AI/BaseAIEnemy.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABaseProjectile::ABaseProjectile()
@@ -51,6 +52,16 @@ ABaseProjectile::ABaseProjectile()
             ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
         }
     }
+    if (!sound)
+    {
+        sound = CreateDefaultSubobject<USoundBase>(TEXT("Sound"));
+        
+        static ConstructorHelpers::FObjectFinder<USoundBase>sounda(TEXT("SoundWave'/Game/Sounds/LaserShot.LaserShot'"));
+        if (sounda.Succeeded())
+        {
+            sound = sounda.Object;
+        }
+    }
 
     static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("Material'/Game/Companion/Energy.Energy'"));
     if (Material.Succeeded())
@@ -83,6 +94,7 @@ void ABaseProjectile::Tick(float DeltaTime)
 // Function that initializes the projectile's velocity in the shoot direction.
 void ABaseProjectile::FireInDirection(const FVector& ShootDirection, AActor* ingoreActor)
 {
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), sound, GetActorLocation(), 0.1f, 1.f, 0.f, nullptr, nullptr);
     TArray<AActor*> ingoreActors;
     ingoreActors.Add(ingoreActor);
     ProjectileMeshComponent->MoveIgnoreActors = ingoreActors;
